@@ -1,12 +1,23 @@
 const createError = require('http-errors');
 const express = require('express');
 const cors = require("cors");
-const pool = require("./DB.js")
+const pool = require("./DB.js");
+const path = require("path");
+const PORT = process.env.PORT || 4000;
+
+// process.env.PORT
+// process.env.NODE_ENV => production or undefined
 
 // middleware
 const app = express();
 app.use(cors());
 app.use(express.json());
+
+if (process.env.NODE_ENV === "production") {
+    // server static content
+    // npm run build
+    app.use(express.static(path.join(__dirname, "client/build")));
+}
 
 // Routes //
 // POST: create a to-do entry
@@ -66,8 +77,8 @@ app.get("/getTodos", async (req, res) => {
 });
 
 // Define the port
-app.listen(4000, () => {
-    console.log("server has started on port 4000");
+app.listen(PORT, () => {
+    console.log('server has started on port ${PORT}');
 });
 
 // catch 404 and forward to error handler
